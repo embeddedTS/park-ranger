@@ -1,0 +1,23 @@
+###
+# 1. Copy to /etc/systemd/system
+#   - cp park-ranger.service /etc/systemd/system/
+#
+# 2. Enable service to load on startup
+#   - systemctl enable park-ranger.service
+#
+# 3. Start service now
+#   - systemctl start park-ranger.service
+###
+
+[Unit]
+Description=Run park ranger application on startup
+ 
+[Service]
+Type=oneshot
+ExecStart=/sbin/modprobe ts-st7565p-fb
+ExecStart=/usr/local/bin/lcd-helper
+ExecStart=/usr/local/bin/park-ranger
+RemainAfterExit=yes
+ 
+[Install]
+WantedBy=multi-user.target
