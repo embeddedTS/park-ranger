@@ -7,7 +7,7 @@ CC = $(CROSS_COMPILE)gcc
 LD = $(CROSS_COMPILE)gcc
 
 
-OBJS := park-ranger.o lcd-display.o
+OBJS := park-ranger.o lcd-display.o gpiolib.o
 
 INCLUDES = -I/usr/include -I/usr/include/cairo
 LIBS = -lcairo

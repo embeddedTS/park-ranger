@@ -7,11 +7,16 @@
 #include <stdlib.h>
 
 #include "lcd-display.h"
+#include "gpiolib.h"
 
 static lcdInfo_t *lcd;
 
 // Define the stop distance in ft
-#define STOP_DIST 1.2
+#define STOP_DIST 6 
+
+// Define LED value status
+#define ON 1
+#define OFF 0
 
 float read_port(void)
 {
@@ -58,11 +63,22 @@ int main(void)
     cairo_surface_t *sfc;
     char output[16];
     char *instruction;
+    int green_led = 117;
+    int yellow_led = 118;
+    int red_led = 119;
     
     if ((lcd = openDisplay()) == NULL) {
         fprintf(stderr, "ERROR: Can't open display\n");
         return 1;
     }
+
+    gpio_export(green_led);
+    gpio_export(yellow_led);
+    gpio_export(red_led);
+
+    gpio_direction(green_led, 1);
+    gpio_direction(yellow_led, 1);
+    gpio_direction(red_led, 1);
 
     sfc = cairo_image_surface_create_for_data((unsigned char *)lcd->frameBuffer, 
         CAIRO_FORMAT_A1, lcd->displayWidth, lcd->displayHeight, lcd->stride);
@@ -79,6 +95,7 @@ int main(void)
             while(1) {
                 range = read_port();
                 if (range != current_range) {
+
                     // Clear the screen first
                     cairo_save (cr);
                     cairo_set_source_rgba (cr, 0, 0, 0, 0);
@@ -91,12 +108,25 @@ int main(void)
                     snprintf(output, sizeof(output), "%.1f ft", range);
                     cairo_show_text(cr, output);
 
-                    if (range <= STOP_DIST)
+                    if (range <= STOP_DIST) {
                         instruction = "STOP!"; 
-                    else if (range > STOP_DIST && range <= STOP_DIST + 1)
+
+                        gpio_write(green_led, OFF);
+                        gpio_write(yellow_led, OFF);
+                        gpio_write(red_led, ON);
+                    }
+                    else if (range > STOP_DIST && range <= STOP_DIST + 1) {
                         instruction = "SLOW"; 
-                    else 
-                        instruction = "GO"; 
+                        gpio_write(green_led, OFF);
+                        gpio_write(yellow_led, ON);
+                        gpio_write(red_led, OFF);
+                    }
+                    else  {
+                        instruction = "GO";
+                        gpio_write(green_led, ON);
+                        gpio_write(yellow_led, OFF);
+                        gpio_write(red_led, OFF);
+                    }
 
                     cairo_set_font_size(cr, 32.0);
                     cairo_move_to(cr, 0, 32);
