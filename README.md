@@ -1,6 +1,9 @@
 # park-ranger
 An example application for TTL sensor, garage parking assistant with [TS-7553-V2](https://www.embeddedarm.com/products/TS-7553-V2) and [Maxbotix Ultrasonic Rangefinder (HRLV-MaxSonar-EZ1 MB1013)](https://maxbotix.com/Ultrasonic_Sensors/MB1013.htm).  The LCD screen of the TS-7553-V2 enclosure displays range in feet and instructs driver on when to pull forward, slow down, and stop.  The sonar sensor is setup to use TTL-level UART by soldering the jumper on the back of the PCB and connected to */dev/ttymxc6* (Pin 10 on the HD1 header, [see manual]( https://wiki.embeddedarm.com/wiki/TS-7553-V2#UARTs)).
 
+![Image of Breadboard Wiring Diagram](https://github.com/embeddedarm/park-ranger/raw/master/ts-7553-v2-park-ranger-demo-breadboard.jpg)
+
+
 # Installation
 All these steps should be done on the TS-7553-V2 as root.
 
